@@ -2,9 +2,16 @@ import pymem
 import pygetwindow as gw
 import time
 import subprocess
+from playsound import playsound #import play sound library
 
-SM64_STAR_COUNT_ADDRESS = 0x8033B21A
-SMW_CREDIT_CHECK_ADDRESS = 0x00000000
+SM64_STAR_COUNT_ADDRESS = 0x8033B21A #Place in code where star count is held ;)
+CAKE_CREDIT_ID =$904AC4B0 # FROM smwcentral.net 192 bytes	Level Data	Thank You cake picture at the end level layout script
+# NEED TO ADD THE POINTER TO LEVEL ID SECTION AND THEN CHECK IF LEVEL ID MATCHES BOWSER 3, IF IT DOES THEN MONITOR FOR CHANGES IN THAT SECTION OF MEMORY
+# ANY CHANGE = CREDITS HAVE LOADED SO WE RETURN TO SM64
+
+YOU_GOT_STAR = "star.mp3"
+You_BEAT_SMW = "credits.mp3"
+BACK_TO_GAME = "back.mp3"
 
 PROJECT64_PROCESS = "Project64.exe"
 SNES9X_PROCESS = "snes9x.exe"
@@ -29,10 +36,12 @@ def start_snes9x():
     subprocess.Popen([SNES9X_PROCESS, "path/to/rom.smc"]) #PUT YOUR PATH TO SMW ROM HERE!!!
     time.sleep(2) 
     switch_to_emulator(SNES9X_PROCESS)
+    playsound(YOU_GOT_STAR)
 
 def close_snes9x():
     for window in gw.getWindowsWithTile(SNES9X_PROCESS):
         window.close()
+    playsound(BACK_TO_GAME)
 
 def main():
     previous_star_count = get_star_count()
